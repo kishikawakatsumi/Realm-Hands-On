@@ -39,7 +39,6 @@ class Tweet: Object {
         favorited = tweetDictionary["favorited"] as! Bool
     }
 
-
     override class func primaryKey() -> String? {
         return "id"
     }
