@@ -15,11 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        let config = Realm.Configuration(schemaVersion: 1)
-        Realm.Configuration.defaultConfiguration = config
-        
-        let realm = try! Realm()
-        print(realm)
         return true
     }
 

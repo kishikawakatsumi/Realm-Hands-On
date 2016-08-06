@@ -23,11 +23,15 @@ class FavoritesViewController: UITableViewController {
 
         let realm = try! Realm()
         likes = realm.objects(Tweet).filter("favorited = %@", true).sorted("createdAt", ascending: false)
-        notificationToken = likes?.addNotificationBlock { [weak self] (results, error) -> () in
-            if let _ = error {
+        notificationToken = likes?.addNotificationBlock { [weak self] (change) in
+            switch change {
+            case .Initial(_):
+                self?.tableView.reloadData()
+            case .Update(_, deletions: _, insertions: _, modifications: _):
+                self?.tableView.reloadData()
+            case .Error(_):
                 return
             }
-            self?.tableView.reloadData()
         }
     }
 

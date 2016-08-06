@@ -47,14 +47,18 @@ class TimelineViewController: UITableViewController {
 
         let realm = try! Realm()
         timeline = realm.objects(Tweet).sorted("createdAt", ascending: false)
-        notificationToken = timeline?.addNotificationBlock { [weak self] (results, error) -> () in
-            if let _ = error {
+        notificationToken = timeline?.addNotificationBlock { [weak self] (change) in
+            switch change {
+            case .Initial(_):
+                self?.tableView.reloadData()
+            case .Update(_, deletions: _, insertions: _, modifications: _):
+                self?.tableView.reloadData()
+            case .Error(_):
                 return
             }
-            self?.tableView.reloadData()
         }
 
-        refreshControl?.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(TimelineViewController.refresh(_:)), forControlEvents: .ValueChanged)
     }
 
     func refresh(sender: UIRefreshControl) {
