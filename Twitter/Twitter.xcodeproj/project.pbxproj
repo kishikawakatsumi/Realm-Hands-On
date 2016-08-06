@@ -14,7 +14,6 @@
 		140E04801C937D9D00394059 /* TimelineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E047F1C937D9D00394059 /* TimelineViewController.swift */; };
 		140E04821C93874300394059 /* TimelineCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 140E04811C93874300394059 /* TimelineCell.xib */; };
 		140E04841C938A6A00394059 /* TimelineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E04831C938A6A00394059 /* TimelineCell.swift */; };
-		1430382D1C93907D000CC3D7 /* Tweet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430382C1C93907C000CC3D7 /* Tweet.swift */; };
 		143038301C939288000CC3D7 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1430382E1C939288000CC3D7 /* Realm.framework */; };
 		143038311C939288000CC3D7 /* Realm.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1430382E1C939288000CC3D7 /* Realm.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		143038321C939288000CC3D7 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1430382F1C939288000CC3D7 /* RealmSwift.framework */; };
@@ -47,7 +46,6 @@
 		140E047F1C937D9D00394059 /* TimelineViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineViewController.swift; sourceTree = "<group>"; };
 		140E04811C93874300394059 /* TimelineCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimelineCell.xib; sourceTree = "<group>"; };
 		140E04831C938A6A00394059 /* TimelineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineCell.swift; sourceTree = "<group>"; };
-		1430382C1C93907C000CC3D7 /* Tweet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tweet.swift; sourceTree = "<group>"; };
 		1430382E1C939288000CC3D7 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Realm.framework; sourceTree = "<group>"; };
 		1430382F1C939288000CC3D7 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = "<group>"; };
 		143038351C939919000CC3D7 /* FavoritesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
@@ -88,7 +86,6 @@
 			isa = PBXGroup;
 			children = (
 				140E04671C937CEF00394059 /* AppDelegate.swift */,
-				1430382C1C93907C000CC3D7 /* Tweet.swift */,
 				140E047F1C937D9D00394059 /* TimelineViewController.swift */,
 				143038351C939919000CC3D7 /* FavoritesViewController.swift */,
 				140E04831C938A6A00394059 /* TimelineCell.swift */,
@@ -194,7 +191,6 @@
 				140E04841C938A6A00394059 /* TimelineCell.swift in Sources */,
 				140E04681C937CEF00394059 /* AppDelegate.swift in Sources */,
 				140E04801C937D9D00394059 /* TimelineViewController.swift in Sources */,
-				1430382D1C93907D000CC3D7 /* Tweet.swift in Sources */,
 				143038361C939919000CC3D7 /* FavoritesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

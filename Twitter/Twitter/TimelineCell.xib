@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -47,11 +47,6 @@
                     <constraint firstItem="0id-YL-86P" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xyU-Nr-Ecj" secondAttribute="trailingMargin" id="rOX-uj-UTP"/>
                 </constraints>
             </tableViewCellContentView>
-            <connections>
-                <outlet property="iconView" destination="U3p-kE-2HW" id="Adv-X5-6N4"/>
-                <outlet property="nameLabel" destination="0id-YL-86P" id="MRp-bg-gUM"/>
-                <outlet property="tweetTextView" destination="UuV-N4-xHf" id="XmV-YV-hqg"/>
-            </connections>
             <point key="canvasLocation" x="300" y="185"/>
         </tableViewCell>
     </objects>

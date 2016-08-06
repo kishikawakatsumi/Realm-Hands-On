@@ -9,13 +9,4 @@
 import UIKit
 
 class TimelineCell: UITableViewCell {
-    @IBOutlet weak var iconView: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var tweetTextView: UITextView!
-
-    override func prepareForReuse() {
-        iconView.image = nil
-        nameLabel.text = nil
-        tweetTextView.text = nil
-    }
 }
