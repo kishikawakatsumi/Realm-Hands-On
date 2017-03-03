@@ -26,11 +26,11 @@ class TimelineViewController: UITableViewController {
         super.viewDidLoad()
 
         let accountStore = ACAccountStore()
-        let accountType = accountStore.accountTypeWithAccountTypeIdentifier(ACAccountTypeIdentifierTwitter)
-        accountStore.requestAccessToAccountsWithType(accountType, options: nil) { (granted, error) -> Void in
+        let accountType = accountStore.accountType(withAccountTypeIdentifier: ACAccountTypeIdentifierTwitter)
+        accountStore.requestAccessToAccounts(with: accountType, options: nil) { (granted, error) -> Void in
             if granted {
-                let accounts = accountStore.accountsWithAccountType(accountType)
-                if let account = accounts.first as? ACAccount {
+                let accounts = accountStore.accounts(with: accountType)
+                if let account = accounts?.first as? ACAccount {
                     self.account = account
                     self.getHomeTimeline()
                 } else {
@@ -41,45 +41,45 @@ class TimelineViewController: UITableViewController {
             }
         }
 
-        tableView.registerNib(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: "timelineCell")
+        tableView.register(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: "timelineCell")
         tableView.rowHeight = 90
         tableView.estimatedRowHeight = 90
 
         let realm = try! Realm()
-        timeline = realm.objects(Tweet).sorted("createdAt", ascending: false)
+        timeline = realm.objects(Tweet.self).sorted(byKeyPath: "createdAt", ascending: false)
         notificationToken = timeline?.addNotificationBlock { [weak self] (change) in
             switch change {
-            case .Initial(_):
+            case .initial(_):
                 self?.tableView.reloadData()
-            case .Update(_, deletions: _, insertions: _, modifications: _):
+            case .update(_, deletions: _, insertions: _, modifications: _):
                 self?.tableView.reloadData()
-            case .Error(_):
+            case .error(_):
                 return
             }
         }
 
-        refreshControl?.addTarget(self, action: #selector(TimelineViewController.refresh(_:)), forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(TimelineViewController.refresh(_:)), for: .valueChanged)
     }
 
-    func refresh(sender: UIRefreshControl) {
+    func refresh(_ sender: UIRefreshControl) {
         if let _ = self.account {
             getHomeTimeline()
         }
     }
 
     func getHomeTimeline() {
-        let requestURL = NSURL(string: "https://api.twitter.com/1/statuses/home_timeline.json")
-        let request = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: .GET, URL: requestURL, parameters: nil)
-        request.account = account
+        let requestURL = URL(string: "https://api.twitter.com/1/statuses/home_timeline.json")
+        let request = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: .GET, url: requestURL, parameters: nil)
+        request?.account = account
 
-        request.performRequestWithHandler { (data, response, error) -> Void in
+        request?.perform { (data, response, error) -> Void in
             if let error = error {
                 self.showAlert(error.localizedDescription)
                 return
             }
 
             do {
-                let results = try NSJSONSerialization.JSONObjectWithData(data, options: [])
+                let results = try JSONSerialization.jsonObject(with: data!, options: [])
                 if let results = results as? NSDictionary {
                     let errors = results["errors"] as! [[String: AnyObject]]
                     let message = errors.last!["message"] as! String
@@ -100,36 +100,36 @@ class TimelineViewController: UITableViewController {
                 self.showAlert(error.localizedDescription)
             }
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.refreshControl?.endRefreshing()
             }
         }
     }
 
-    func postFavorite(id: String) {
+    func postFavorite(_ id: String) {
         let realm = try! Realm()
-        guard let tweet = realm.objectForPrimaryKey(Tweet.self, key: id) else {
+        guard let tweet = realm.object(ofType: Tweet.self, forPrimaryKey: id) else {
             return
         }
 
-        let requestURL: NSURL
+        let requestURL: URL
         if tweet.favorited {
-            requestURL = NSURL(string: "https://api.twitter.com/1.1/favorites/destroy.json")!
+            requestURL = URL(string: "https://api.twitter.com/1.1/favorites/destroy.json")!
         } else {
-            requestURL = NSURL(string: "https://api.twitter.com/1.1/favorites/create.json")!
+            requestURL = URL(string: "https://api.twitter.com/1.1/favorites/create.json")!
         }
 
-        let request = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: .POST, URL: requestURL, parameters: ["id": id])
-        request.account = account
+        let request = SLRequest(forServiceType: SLServiceTypeTwitter, requestMethod: .POST, url: requestURL, parameters: ["id": id])
+        request?.account = account
 
-        request.performRequestWithHandler { (data, response, error) -> Void in
+        request?.perform { (data, response, error) -> Void in
             if let error = error {
                 self.showAlert(error.localizedDescription)
                 return
             }
 
             let realm = try! Realm()
-            if let tweet = realm.objectForPrimaryKey(Tweet.self, key: id) {
+            if let tweet = realm.object(ofType: Tweet.self, forPrimaryKey: id) {
                 try! realm.write {
                     tweet.favorited = !tweet.favorited
                 }
@@ -137,36 +137,36 @@ class TimelineViewController: UITableViewController {
         }
     }
 
-    func showAlert(message: String) {
-        dispatch_async(dispatch_get_main_queue()) {
-            let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            self.presentViewController(alertController, animated: true, completion: nil)
+    func showAlert(_ message: String) {
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alertController, animated: true, completion: nil)
         }
     }
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return timeline?.count ?? 0
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("timelineCell", forIndexPath: indexPath) as! TimelineCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "timelineCell", for: indexPath) as! TimelineCell
 
         let tweet = timeline![indexPath.row]
 
         cell.nameLabel.text = tweet.name
         cell.tweetTextView.text = tweet.text
 
-        NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: NSURL(string: tweet.iconURL)!)) { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: URLRequest(url: URL(string: tweet.iconURL)!)) { (data, response, error) -> Void in
             if let _ = error {
                 return
             }
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 let image = UIImage(data: data!)!
                 cell.iconView.image = image
             }
@@ -175,15 +175,15 @@ class TimelineViewController: UITableViewController {
         return cell
     }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
 
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let tweet = timeline![indexPath.row]
         postFavorite(tweet.id)
 
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 
 }

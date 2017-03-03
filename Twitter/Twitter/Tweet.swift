@@ -14,13 +14,13 @@ class Tweet: Object {
     dynamic var text = ""
     dynamic var iconURL = ""
     dynamic var id = ""
-    dynamic var createdAt = NSDate()
+    dynamic var createdAt = Date()
 
     dynamic var favorited = false
 
-    static var dateFormatter: NSDateFormatter {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+    static var dateFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "EEE MMM dd HH:mm:ss Z yyyy"
         return dateFormatter
     }
@@ -34,7 +34,7 @@ class Tweet: Object {
         iconURL = user["profile_image_url_https"] as! String
 
         id = tweetDictionary["id_str"] as! String
-        createdAt = Tweet.dateFormatter.dateFromString(tweetDictionary["created_at"] as! String)!
+        createdAt = Tweet.dateFormatter.date(from: tweetDictionary["created_at"] as! String)!
 
         favorited = tweetDictionary["favorited"] as! Bool
     }

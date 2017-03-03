@@ -17,19 +17,19 @@ class FavoritesViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.registerNib(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: "timelineCell")
+        tableView.register(UINib(nibName: "TimelineCell", bundle: nil), forCellReuseIdentifier: "timelineCell")
         tableView.rowHeight = 90
         tableView.estimatedRowHeight = 90
 
         let realm = try! Realm()
-        likes = realm.objects(Tweet).filter("favorited = %@", true).sorted("createdAt", ascending: false)
+        likes = realm.objects(Tweet.self).filter("favorited = %@", true).sorted(byKeyPath: "createdAt", ascending: false)
         notificationToken = likes?.addNotificationBlock { [weak self] (change) in
             switch change {
-            case .Initial(_):
+            case .initial(_):
                 self?.tableView.reloadData()
-            case .Update(_, deletions: _, insertions: _, modifications: _):
+            case .update(_, deletions: _, insertions: _, modifications: _):
                 self?.tableView.reloadData()
-            case .Error(_):
+            case .error(_):
                 return
             }
         }
@@ -42,28 +42,28 @@ class FavoritesViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return likes?.count ?? 0
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("timelineCell", forIndexPath: indexPath) as! TimelineCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "timelineCell", for: indexPath) as! TimelineCell
 
         let tweet = likes![indexPath.row]
 
         cell.nameLabel.text = tweet.name
         cell.tweetTextView.text = tweet.text
 
-        NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: NSURL(string: tweet.iconURL)!)) { (data, response, error) -> Void in
+        URLSession.shared.dataTask(with: URLRequest(url: URL(string: tweet.iconURL)!)) { (data, response, error) -> Void in
             if let _ = error {
                 return
             }
 
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 let image = UIImage(data: data!)!
                 cell.iconView.image = image
             }
@@ -72,7 +72,7 @@ class FavoritesViewController: UITableViewController {
         return cell
     }
 
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableViewAutomaticDimension
     }
 
